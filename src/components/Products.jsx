@@ -1,63 +1,57 @@
-import { useState } from "react"
-import { Items } from "./Items"
-const url = 'https://fakestoreapi.com/products'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import { Items } from './Items';
 
 const Products = () => {
-    //state to hold products recieved after fetching
-    const [ProductArray, setProductArray] = useState([])
-    //state to hold the cart for items selected by user
-    //notice it is in the parent component
-    const [Cart, setCart] = useState([])
-    async function getData() {
-        try{
-            const res = await fetch(url)
-            if(res.status !== 200){
-                throw new Error(`HTTP code ${res.status}`);
+    const limit = 15;
+    const [skip, setSkip] = useState(0);
+    const [isLoading, setisLoading] = useState(true);
+    const [products, setProducts] = useState([]);
+    const [cart, setCart] = useState([])
+
+    const url = `https://dummyjson.com/products?limit=${limit}&skip=${skip}`;
+    
+    
+
+    useEffect(()=>{
+        async function getData() {
+            try {
+                console.log(url)
+                const response = await axios.get(url);
+                const data = response.data;
+                // console.log(data.products);
+                setisLoading(prev=>!prev)
+                setProducts(prev => [...prev, ...data.products]);
+                
+                
+            } catch (error) {
+                console.error("Error in fetching data")
             }
-            const result = await res.json();
-            setProductArray(result)
-            console.log(result);
-        }catch(error){
-            console.log(error.message);
         }
+        getData();
+    },[skip])
+
+    console.log(products);
+    console.log(isLoading)
+    const loadMoreHandler = ()=>{
+        console.log(`load more btn is clicked`);
+        setSkip(prev=>prev+15); 
     }
-    //handle add to cart function
-    function handleAddToCart(product) 
-    {
-        //check if there exist any object in the cart with same id as product
-       const  isAdded = Cart.some((item)=> {return item.id === product.id})
-        if(!isAdded){
-            console.log(`${product.title} is added to Cart` );
-            
-         setCart([...Cart, product])
-        }    
-    }
-    console.log(Cart)
+    
   return (
     <div>
-            {
-                ProductArray.length === 0 ? 
-                <button onClick={getData}>Load Products</button> : 
-                (
-                <ul> {ProductArray.map((val)=>
-                    {
-                    const isAdded = Cart.some(it=>it.id === val.id)
-                       return (<li key={val.id}> 
-                       <Items 
-                       img={val.image}
-                        title = {val.title}
-                        price = {val.price}
-                        //callback func() so that it doesnt run automatically
-                        handleAdd = {()=>handleAddToCart(val)}
-                        //to change button after click
-                        isAdded = {isAdded}
-                       />
-                       </li>);
-                       
-                    })}
-                </ul>
-                )
-            }
+            
+                {products.map((val)=>{
+                return <li key={val.id}><Items 
+                    title = {val.title}
+                    category = {val.category}
+                    price = {val.price}
+                    img = {val.images[0]}
+                /></li>
+            })}
+           
+
+            <button onClick={loadMoreHandler} disabled={isLoading} >load more products</button>
     </div>
   )
 }
