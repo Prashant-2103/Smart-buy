@@ -14,14 +14,28 @@ const Products = () => {
     
 
     useEffect(()=>{
+        
         async function getData() {
             try {
+                setisLoading(true)
                 console.log(url)
                 const response = await axios.get(url);
-                const data = response.data;
+                // if(skip === 0) {
+                //     const data = response.data;
+                // }
                 // console.log(data.products);
-                setisLoading(prev=>!prev)
-                setProducts(prev => [...prev, ...data.products]);
+                setProducts(prev =>{
+                    // creating id's of existing products
+                    const existingId = new Set(prev.map(individualId => individualId.id));
+                    //fetching new deta 
+                    const newFetch = response.data.products;
+                    //filter out if newfetch has products with existing id's and put it into a newProduct array
+                    const newProduct = newFetch.filter((item)=>{
+                           return  !existingId.has(item.id)
+                    })
+                    return [...prev, ...newProduct]
+                })
+                setisLoading(false)
                 
                 
             } catch (error) {
@@ -31,27 +45,38 @@ const Products = () => {
         getData();
     },[skip])
 
-    console.log(products);
-    console.log(isLoading)
+    useEffect(()=>{
+        console.log(`product state currently is `,products)
+    },[products])
+
+    useEffect(()=>{
+        console.log(`isLoading state currently is `,isLoading)
+    },[isLoading])
+
     const loadMoreHandler = ()=>{
+        
         console.log(`load more btn is clicked`);
         setSkip(prev=>prev+15); 
     }
     
+    
   return (
-    <div>
-            
+    <div className='p-10'>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6" >
                 {products.map((val)=>{
-                return <li key={val.id}><Items 
+                return <li key={val.id} className=""><Items 
                     title = {val.title}
                     category = {val.category}
                     price = {val.price}
                     img = {val.images[0]}
                 /></li>
-            })}
-           
+            })}    
+            </ul>           
 
-            <button onClick={loadMoreHandler} disabled={isLoading} >load more products</button>
+            <button className={`px-8 py-3 rounded-full font-semibold text-white transition-all
+          ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-blue-200'}`} onClick={loadMoreHandler} disabled={isLoading} >
+            {isLoading ? "Loading" : "Load More Producst" }
+            </button>
     </div>
   )
 }

@@ -1,17 +1,23 @@
-
-
-export const Items = (props) => {
-  // console.log(props)
+export const Items = ({ title, category, price, img }) => {
   return (
-    <div>
-        <img src={props.img} alt=" Product Image" height='200px' width='auto' />
-        <p>{props.title}, <span>{props.category}</span></p>
-
-        <h2>${props.price}</h2>
-        <div className="purchase">
-          <button id="buy">Buy</button>
-        <button id="cart" onClick={props.handleAdd} disabled={props.isAdded}> { props.isAdded ? "Added" : "Add to cart"}</button>
-        </div>
+    <div className="border p-4 rounded shadow-sm bg-white">
+      {/* Product Image */}
+      <img src={img} alt={title} className="w-full h-40 object-contain mb-2" />
+      
+      {/* Product Details */}
+      <h3 className="font-bold text-lg">{title}</h3>
+      <p className="text-gray-500 text-sm">{category}</p>
+      <p className="text-blue-600 font-bold my-2">${price}</p>
+      
+      {/* Action Buttons */}
+      <div className="flex gap-2">
+        <button className="bg-blue-500 text-white px-3 py-2 rounded flex-1 hover:bg-blue-600 active:scale-95">
+          Buy Now
+        </button>
+        <button className=" text-black border-2 px-3 py-2 rounded flex-1 hover:bg-blue-400 active:scale-95">
+          Add to cart
+        </button>
+      </div>
     </div>
-  )
-}
+  );
+};
