@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import { Items } from './Items';
+import { globalProductContext } from '../App';
 
 const Products = () => {
+    const {products,setProducts} = useContext(globalProductContext);
+    // console.log(products.products);
+    
     const limit = 15;
     const [skip, setSkip] = useState(0);
     const [isLoading, setisLoading] = useState(true);
-    const [products, setProducts] = useState([]);
-    const [cart, setCart] = useState([])
+    
 
     const url = `https://dummyjson.com/products?limit=${limit}&skip=${skip}`;
     
@@ -73,10 +76,12 @@ const Products = () => {
             })}    
             </ul>           
 
-            <button className={`px-8 py-3 rounded-full font-semibold text-white transition-all
+            <div className="loadMoreBtn m-5">
+                <button className={`px-8 py-3 rounded-full font-semibold text-white transition-all
           ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-blue-200'}`} onClick={loadMoreHandler} disabled={isLoading} >
             {isLoading ? "Loading" : "Load More Producst" }
             </button>
+            </div>
     </div>
   )
 }
