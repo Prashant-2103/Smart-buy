@@ -49,11 +49,11 @@ const Products = () => {
     },[skip])
 
     useEffect(()=>{
-        console.log(`product state currently is `,products)
+        // console.log(`product state currently is `,products)
     },[products])
 
     useEffect(()=>{
-        console.log(`isLoading state currently is `,isLoading)
+        // console.log(`isLoading state currently is `,isLoading)
     },[isLoading])
 
     const loadMoreHandler = ()=>{
@@ -79,7 +79,7 @@ const Products = () => {
             <div className="loadMoreBtn m-5">
                 <button className={`px-8 py-3 rounded-full font-semibold text-white transition-all
           ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-blue-200'}`} onClick={loadMoreHandler} disabled={isLoading} >
-            {isLoading ? "Loading" : "Load More Producst" }
+            {isLoading ? "Loading" : "Load More Products" }
             </button>
             </div>
     </div>
